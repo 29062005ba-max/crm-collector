@@ -1,0 +1,68 @@
+# === КРИТИЧНО: секреты ===
+.env
+.env.*
+!.env.example
+infra/.env
+*.pem
+*.key
+infra/ssl/
+
+# === БД дампы и бэкапы ===
+*.sql
+*.sql.gz
+*.dump
+backup_*.sql
+backup-*/
+infra/backups/
+
+# === Чеки клиентов (персональные данные) ===
+backend/receipts/
+backend/uploads/
+backend/media/
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*.so
+.Python
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+venv/
+.venv/
+
+# === Node.js ===
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# === Логи ===
+*.log
+logs/
+npm-debug.log*
+
+# === Docker ===
+postgres-data/
+pg-data/
+docker-compose.override.yml
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# === OS ===
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === Временное ===
+*.bak
+*.tmp
+*~

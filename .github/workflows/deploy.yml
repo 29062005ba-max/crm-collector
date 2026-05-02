@@ -1,0 +1,47 @@
+name: Deploy to Production
+
+on:
+  workflow_dispatch:  # manual trigger only
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          script: |
+            cd /home/crm/crm-collector
+            # Backup before deploy
+            docker exec crm_postgres pg_dump -U crm crm_db > backup_pre_deploy_$(date +%Y%m%d_%H%M%S).sql
+            # Pull latest
+            git pull origin main
+            # Rebuild and restart
+            cd infra
+            docker-compose build --no-cache backend frontend
+            docker-compose up -d
+            # Run migrations
+            sleep 10
+            docker exec crm_backend alembic upgrade head
+            # Smoke test
+            curl -sf https://$PROD_DOMAIN/health || exit 1
+
+      - name: Notify Slack on success
+        if: success()
+        run: |
+          echo "Deploy succeeded at $(date)"
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "Deploy FAILED!"
