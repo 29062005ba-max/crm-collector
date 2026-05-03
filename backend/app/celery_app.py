@@ -24,6 +24,7 @@ celery_app = Celery(
         "app.tasks.events",
         "app.tasks.scoring",  # <-- NEW: scoring recalculation
         "app.tasks.kpi_snapshot",  # <-- NEW v3: KPI snapshots for control panel
+        "app.tasks.tasks_overdue",  # <-- Pack 2: overdue tasks check
         "app.events.handlers",
     ],
 )
@@ -56,6 +57,7 @@ celery_app.conf.update(
         "app.tasks.events.*":        {"queue": "workflow_queue"},
         "app.tasks.scoring.*":       {"queue": "kpi_queue"},  # <-- NEW
         "app.tasks.kpi_snapshot.*":  {"queue": "kpi_queue"},  # <-- NEW v3
+        "app.tasks.tasks_overdue.*": {"queue": "workflow_queue"},  # <-- Pack 2
     },
 
     task_queues=(
@@ -101,6 +103,12 @@ celery_app.conf.beat_schedule = {
     },
     "process-pending-events": {
         "task": "app.tasks.events.process_pending_events",
+        "schedule": crontab(minute="*/30"),
+        "options": {"queue": "workflow_queue"},
+    },
+    # === Pack 2: Overdue tasks check (every 30 min) ===
+    "check-overdue-tasks": {
+        "task": "app.tasks.tasks_overdue.check_overdue_tasks",
         "schedule": crontab(minute="*/30"),
         "options": {"queue": "workflow_queue"},
     },

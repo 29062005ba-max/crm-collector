@@ -34,7 +34,6 @@ from app.api.v1.endpoints.saas import (
     notifications_router,
     activity_router,
     schedules_router,
-    kanban_router,
     dashboard_kpi_router,
     workflow_router,
 )
@@ -42,9 +41,12 @@ api_router.include_router(tasks_router)
 api_router.include_router(notifications_router)
 api_router.include_router(activity_router)
 api_router.include_router(schedules_router)
-api_router.include_router(kanban_router)
 api_router.include_router(dashboard_kpi_router)
 api_router.include_router(workflow_router)
+
+# Pack 2: Tasks extended endpoints (stats, created, status PATCH, list with filters)
+from app.api.v1.endpoints.tasks_extra import router as tasks_extra_router
+api_router.include_router(tasks_extra_router)
 
 # Multi-tenancy
 from app.api.v1.endpoints.companies import router as companies_router

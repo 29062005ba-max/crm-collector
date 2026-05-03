@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import AppShell from "@/components/layout/AppShell";
 import { PageHeader, Spinner } from "@/components/ui";
@@ -25,7 +25,7 @@ const STATUS_COLORS: Record<string, string> = {
   cancelled: "bg-gray-100 text-gray-600",
 };
 
-export default function PromisesPage() {
+function PromisesContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   // Whitelist валидных значений status — защита от мусора в URL
@@ -245,5 +245,13 @@ export default function PromisesPage() {
         </div>
       )}
     </AppShell>
+  );
+}
+
+export default function PromisesPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-gray-400">Загрузка...</div>}>
+      <PromisesContent />
+    </Suspense>
   );
 }

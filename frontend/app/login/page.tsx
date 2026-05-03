@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { authService } from "@/services/auth";
 import { useAuth } from "@/lib/auth-context";
 import toast from "react-hot-toast";
+import { Crown, Mail, Lock } from "lucide-react";
 
 interface LoginForm {
   email: string;
@@ -23,9 +24,6 @@ export default function LoginPage() {
       const res = await authService.login(data.email, data.password);
       setUser(res.user);
       toast.success(`Добро пожаловать, ${res.user.full_name}!`);
-      // Smart redirect по роли:
-      //   MANAGER → /my-day (план дня — главное место менеджера)
-      //   HEAD/ADMIN → /control-panel (мониторинг команды)
       const role = (res.user.role || "").toUpperCase();
       const target = role === "MANAGER" ? "/my-day" : "/control-panel";
       router.replace(target);
@@ -37,49 +35,69 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary-900 to-primary-700 p-4">
-      <div className="w-full max-w-md">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gray-50 p-4">
+      {/* Soft gradient blobs */}
+      <div className="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-gradient-to-br from-primary-200 to-primary-100 opacity-40 blur-3xl" />
+      <div className="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-gradient-to-br from-purple-200 to-pink-100 opacity-40 blur-3xl" />
+
+      <div className="relative w-full max-w-md animate-scale-in">
+        {/* Logo */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-white">CRM Collector</h1>
-          <p className="mt-2 text-primary-200">Система управления взысканием</p>
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-primary-500 to-primary-700 shadow-lifted">
+            <Crown size={32} className="text-white" />
+          </div>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900">CRM Collector</h1>
+          <p className="mt-1.5 text-sm font-medium text-gray-500">Система управления взысканием</p>
         </div>
 
-        <div className="card p-8">
-          <h2 className="mb-6 text-xl font-semibold text-gray-900">Вход в систему</h2>
+        {/* Card */}
+        <div className="rounded-3xl bg-white p-8 shadow-modal">
+          <h2 className="mb-6 text-xl font-bold tracking-tight text-gray-900">Вход в систему</h2>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">Email</label>
-              <input
-                type="email"
-                {...register("email", { required: "Введите email" })}
-                className="input"
-                placeholder="admin@crm.local"
-                autoComplete="email"
-              />
-              {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
+              <label className="mb-2 block text-sm font-semibold text-gray-700">Email</label>
+              <div className="relative">
+                <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="email"
+                  {...register("email", { required: "Введите email" })}
+                  className="input pl-11"
+                  placeholder="admin@crm.local"
+                  autoComplete="email"
+                />
+              </div>
+              {errors.email && <p className="mt-1.5 text-xs font-medium text-danger-500">{errors.email.message}</p>}
             </div>
 
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">Пароль</label>
-              <input
-                type="password"
-                {...register("password", { required: "Введите пароль" })}
-                className="input"
-                placeholder="••••••••"
-                autoComplete="current-password"
-              />
-              {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>}
+              <label className="mb-2 block text-sm font-semibold text-gray-700">Пароль</label>
+              <div className="relative">
+                <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="password"
+                  {...register("password", { required: "Введите пароль" })}
+                  className="input pl-11"
+                  placeholder="••••••••"
+                  autoComplete="current-password"
+                />
+              </div>
+              {errors.password && <p className="mt-1.5 text-xs font-medium text-danger-500">{errors.password.message}</p>}
             </div>
 
-            <button type="submit" className="btn-primary w-full py-2.5" disabled={loading}>
+            <button type="submit" className="btn-primary w-full py-3 mt-2" disabled={loading}>
               {loading ? "Входим..." : "Войти"}
             </button>
           </form>
 
-          <p className="mt-4 text-center text-xs text-gray-400">
-            По умолчанию: admin@crm.local / Admin1234!
-          </p>
+          <div className="mt-6 rounded-2xl bg-gray-50 px-4 py-3 text-center">
+            <p className="text-xs font-medium text-gray-500">
+              Демо-доступ:
+            </p>
+            <p className="mt-0.5 text-xs font-mono text-gray-700">
+              admin@crm.local / Admin1234!
+            </p>
+          </div>
         </div>
       </div>
     </div>

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Users, CalendarCheck,
-  CreditCard, LogOut, BarChart2, UserCheck, Phone, Trello, ListChecks, Activity,
+  CreditCard, LogOut, BarChart2, UserCheck, Phone, ListChecks, Activity,
   PhoneCall, Flame, Headphones, Sun, Crown, FolderArchive, ChevronDown, ChevronRight,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
@@ -45,7 +45,6 @@ const MANAGER_NAV: SidebarItem[] = [
     items: [
       { href: "/payments", label: "Платежи", icon: CreditCard },
       { href: "/calls", label: "История звонков", icon: Phone },
-      { href: "/kanban", label: "Канбан", icon: Trello },
     ],
   },
 ];
@@ -56,7 +55,6 @@ const HEAD_NAV: SidebarItem[] = [
   { href: "/control-panel", label: "Контрольная панель", icon: Crown },
   { href: "/debtors", label: "Должники", icon: Users },
   { href: "/priority", label: "Приоритет", icon: Flame },
-  { href: "/kanban", label: "Канбан", icon: Trello },
   { href: "/my-day", label: "План на день", icon: Sun },
   { href: "/call-queue/admin", label: "Управление обзвоном", icon: Headphones },
   { href: "/tasks", label: "Задачи", icon: ListChecks },
